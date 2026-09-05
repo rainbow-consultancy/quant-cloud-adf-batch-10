@@ -1,0 +1,15 @@
+{
+	"name": "adfquantcloudbatch10",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1226d799-8689-4baa-89f6-9d5317cd5354",
+		"tenantId": "77405ede-ce00-4b33-a2f9-dc99780ccf8b"
+	}
+}
