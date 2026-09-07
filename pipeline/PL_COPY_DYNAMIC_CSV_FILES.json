@@ -53,7 +53,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"FolderName": "input",
-							"FileName": "movies.csv"
+							"FileName": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -63,12 +66,23 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"FolderName": "output",
-							"FileName": "target_movies"
+							"FileName": {
+								"value": "@concat(\n    pipeline().parameters.TargetFileName,\n    '_',\n    formatDateTime(utcNow(), 'ddMMyyyy')\n)",
+								"type": "Expression"
+							}
 						}
 					}
 				]
 			}
 		],
+		"parameters": {
+			"SourceFileName": {
+				"type": "string"
+			},
+			"TargetFileName": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
