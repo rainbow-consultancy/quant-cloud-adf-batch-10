@@ -126,7 +126,10 @@
 									"referenceName": "DS_BINARY_MULTIFILE",
 									"type": "DatasetReference",
 									"parameters": {
-										"FolderName": "multifile_ouput_folder",
+										"FolderName": {
+											"value": "@pipeline().parameters.FileType",
+											"type": "Expression"
+										},
 										"FileName": {
 											"value": "@item().name",
 											"type": "Expression"
