@@ -1,0 +1,149 @@
+{
+	"name": "PL_COPY_FILES_AS_PER_USER_INPUT",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetMetaDataForInputFolder",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_DYNAMIC_CSV_ACTION",
+						"type": "DatasetReference",
+						"parameters": {
+							"FolderName": "input",
+							"FileName": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "FilterFileTypes",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "GetMetaDataForInputFolder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetMetaDataForInputFolder').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(\r\n    item().name, \r\n    pipeline().parameters.FileType\r\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEachFileType",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FilterFileTypes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FilterFileTypes').output.Value",
+						"type": "Expression"
+					},
+					"batchCount": 20,
+					"activities": [
+						{
+							"name": "CopyEachFileType",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_BINARY_MULTIFILE",
+									"type": "DatasetReference",
+									"parameters": {
+										"FolderName": "input",
+										"FileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_BINARY_MULTIFILE",
+									"type": "DatasetReference",
+									"parameters": {
+										"FolderName": "multifile_ouput_folder",
+										"FileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"FileType": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
