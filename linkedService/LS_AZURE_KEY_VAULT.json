@@ -1,0 +1,10 @@
+{
+	"name": "LS_AZURE_KEY_VAULT",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://qct-secret-store.vault.azure.net/"
+		}
+	}
+}
