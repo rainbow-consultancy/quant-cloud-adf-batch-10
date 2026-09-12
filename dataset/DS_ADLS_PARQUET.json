@@ -1,0 +1,32 @@
+{
+	"name": "DS_ADLS_PARQUET",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_GEN2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FILE_NAME": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "SQL_DATABASE"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().FILE_NAME",
+					"type": "Expression"
+				},
+				"folderPath": "AZURE-SQL-DATABASE",
+				"fileSystem": "adfbatch10"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
