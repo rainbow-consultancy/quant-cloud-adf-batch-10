@@ -8,8 +8,32 @@
 		"LS_ADLS_GEN2_accountKey": {
 			"value": ""
 		},
+		"LS_SQL_SERVER_ONPREM_password": {
+			"value": ""
+		},
 		"LS_ADLS_GEN2_properties_typeProperties_url": {
 			"value": "https://qcadlsbatch10.dfs.core.windows.net/"
+		},
+		"LS_AZURE_KEY_VAULT_properties_typeProperties_baseUrl": {
+			"value": "https://qct-secret-store.vault.azure.net/"
+		},
+		"LS_AZURE_SQL_properties_typeProperties_server": {
+			"value": "quantserver.database.windows.net"
+		},
+		"LS_AZURE_SQL_properties_typeProperties_database": {
+			"value": "qct-batch-11"
+		},
+		"LS_AZURE_SQL_properties_typeProperties_userName": {
+			"value": "quant-user"
+		},
+		"LS_SQL_SERVER_ONPREM_properties_typeProperties_server": {
+			"value": "SandeepReddy"
+		},
+		"LS_SQL_SERVER_ONPREM_properties_typeProperties_database": {
+			"value": "qc_db_batch11"
+		},
+		"LS_SQL_SERVER_ONPREM_properties_typeProperties_userName": {
+			"value": "batch_10"
 		}
 	}
 }
