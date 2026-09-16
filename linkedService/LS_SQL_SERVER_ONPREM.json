@@ -1,0 +1,21 @@
+{
+	"name": "LS_SQL_SERVER_ONPREM",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "SandeepReddy",
+			"database": "qc_db_batch11",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "batch_10",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0OWYzMDZjNy0xNzI2LTQ5NDktOGM1NC0zZDk2OTU1NTI2ODciLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IR-SANDEEP-ONPREM-MECHINE",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
