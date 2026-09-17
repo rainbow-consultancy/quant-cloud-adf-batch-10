@@ -40,7 +40,7 @@
 				"          SALARY = toInteger(byName('SALARY'))) ~> AddBonusColumn",
 				"AddBonusColumn sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['filtered_employee'],",
+				"     partitionFileNames:['filtered_employee_bonus'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",

@@ -33,11 +33,13 @@
 				"EMPSOURCE filter(byName('ACTIVE_STATUS') =='ACTIVE') ~> filteractiveemployees",
 				"filteractiveemployees sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['filtered_employee'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink"
 			]
 		}
 	}
