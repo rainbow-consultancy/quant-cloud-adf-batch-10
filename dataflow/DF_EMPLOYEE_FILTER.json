@@ -1,0 +1,44 @@
+{
+	"name": "DF_EMPLOYEE_FILTER",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_DF_EMPLOYEE_CSV_SOURCE",
+						"type": "DatasetReference"
+					},
+					"name": "EMPSOURCE"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_DF_SINK_EMPLOYEE",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filteractiveemployees"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EMPSOURCE",
+				"EMPSOURCE filter(byName('ACTIVE_STATUS') =='ACTIVE') ~> filteractiveemployees",
+				"filteractiveemployees sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink"
+			]
+		}
+	}
+}
