@@ -1,0 +1,53 @@
+{
+	"name": "DF_EMPLOYEE_FILTER_ADD_BONUS",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_DF_EMPLOYEE_CSV_SOURCE",
+						"type": "DatasetReference"
+					},
+					"name": "EMPSOURCE"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_DF_SINK_EMPLOYEE",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filteractiveemployees"
+				},
+				{
+					"name": "AddBonusColumn"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EMPSOURCE",
+				"EMPSOURCE filter(byName('ACTIVE_STATUS') =='ACTIVE') ~> filteractiveemployees",
+				"filteractiveemployees derive(BONUS = toInteger(toInteger(byName('SALARY')) * 0.20),",
+				"          DEP_ID = toInteger(byName('DEP_ID')),",
+				"          EMP_ID = toInteger(byName('EMP_ID')),",
+				"          SALARY = toInteger(byName('SALARY'))) ~> AddBonusColumn",
+				"AddBonusColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['filtered_employee'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink"
+			]
+		}
+	}
+}
