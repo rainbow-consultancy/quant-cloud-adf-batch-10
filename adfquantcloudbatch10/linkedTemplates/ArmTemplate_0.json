@@ -171,6 +171,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_DEP')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "emp_dept.csv",
+						"folderPath": "onprem_sql",
+						"fileSystem": "adfbatch10"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "DEP_ID",
+						"type": "String"
+					},
+					{
+						"name": "DEP_NAME",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_CSV_INPUT')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -221,6 +259,63 @@
 						"type": "AzureBlobFSLocation",
 						"fileName": "employees",
 						"folderPath": "output",
+						"fileSystem": "adfbatch10"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_DF_EMPLOYEE_CSV_SOURCE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "employee_20260916",
+						"folderPath": "onprem_sql",
+						"fileSystem": "adfbatch10"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_DF_SINK_EMPLOYEE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "DATAFLOWS",
 						"fileSystem": "adfbatch10"
 					},
 					"columnDelimiter": ",",
@@ -374,63 +469,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/IR-SANDEEP-ONPREM-MECHINE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_DF_EMPLOYEE_CSV_SOURCE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ADLS_GEN2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "employee_20260916",
-						"folderPath": "onprem_sql",
-						"fileSystem": "adfbatch10"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_DF_SINK_EMPLOYEE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ADLS_GEN2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "DATAFLOWS",
-						"fileSystem": "adfbatch10"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
 			]
 		},
 		{
@@ -1433,44 +1471,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_DYNAMIC_CSV_ACTION')]",
 				"[concat(variables('factoryId'), '/datasets/DS_BINARY_MULTIFILE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_AZURE_SQL_TABLES')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AZURE_SQL",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"SCHEMA_NAME": {
-						"type": "string"
-					},
-					"TABLE_NAME": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "SQL_DATABASE"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().SCHEMA_NAME",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().TABLE_NAME",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_SQL')]"
 			]
 		}
 	]

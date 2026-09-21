@@ -1055,6 +1055,139 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_EMPLOYEE_JOIN')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_EMPLOYEE_SECOND_HIGHEST_SALARY_PER_DEP_JOIN",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"EMPSOURCE": {},
+									"DEPSOURCE": {},
+									"sink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "None",
+							"cacheSinks": {
+								"firstRowOnly": true
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_EMPLOYEE_SECOND_HIGHEST_SALARY_PER_DEP_JOIN')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_FILTER_EMP')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_EMPLOYEE_FILTER",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"EMPSOURCE": {},
+									"sink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "None",
+							"cacheSinks": {
+								"firstRowOnly": true
+							}
+						}
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_EMPLOYEE_FILTER_ADD_BONUS",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"EMPSOURCE": {},
+									"sink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "None",
+							"cacheSinks": {
+								"firstRowOnly": true
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_EMPLOYEE_FILTER')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_EMPLOYEE_FILTER_ADD_BONUS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PL_ONPREM_MIGRATION')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1189,6 +1322,55 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_ONPREM_SQL')]",
 				"[concat(variables('factoryId'), '/datasets/DS_TARGET_ONPREM_TO_ADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_SECOND_HIGHEST_SALARY_DF')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_EMPLOYEE_SECOND_HIGHEST_SALARY_PER_DEP",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"EMPSOURCE": {},
+									"sink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "None",
+							"cacheSinks": {
+								"firstRowOnly": true
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_EMPLOYEE_SECOND_HIGHEST_SALARY_PER_DEP')]"
 			]
 		},
 		{
@@ -1443,6 +1625,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_DEP')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "emp_dept.csv",
+						"folderPath": "onprem_sql",
+						"fileSystem": "adfbatch10"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "DEP_ID",
+						"type": "String"
+					},
+					{
+						"name": "DEP_NAME",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_CSV_INPUT')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1493,6 +1713,63 @@
 						"type": "AzureBlobFSLocation",
 						"fileName": "employees",
 						"folderPath": "output",
+						"fileSystem": "adfbatch10"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_DF_EMPLOYEE_CSV_SOURCE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "employee_20260916",
+						"folderPath": "onprem_sql",
+						"fileSystem": "adfbatch10"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_DF_SINK_EMPLOYEE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "DATAFLOWS",
 						"fileSystem": "adfbatch10"
 					},
 					"columnDelimiter": ",",
@@ -1779,146 +2056,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_DF_EMPLOYEE_CSV_SOURCE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ADLS_GEN2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "employee_20260916",
-						"folderPath": "onprem_sql",
-						"fileSystem": "adfbatch10"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_DF_SINK_EMPLOYEE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ADLS_GEN2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "DATAFLOWS",
-						"fileSystem": "adfbatch10"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_FILTER_EMP')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Data flow",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_EMPLOYEE_FILTER",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"EMPSOURCE": {},
-									"sink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "None",
-							"cacheSinks": {
-								"firstRowOnly": true
-							}
-						}
-					},
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_EMPLOYEE_FILTER_ADD_BONUS",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"EMPSOURCE": {},
-									"sink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "None",
-							"cacheSinks": {
-								"firstRowOnly": true
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_EMPLOYEE_FILTER')]",
-				"[concat(variables('factoryId'), '/dataflows/DF_EMPLOYEE_FILTER_ADD_BONUS')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DF_EMPLOYEE_FILTER_ADD_BONUS')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1974,6 +2111,187 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_DF_EMPLOYEE_CSV_SOURCE')]",
+				"[concat(variables('factoryId'), '/datasets/DS_DF_SINK_EMPLOYEE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_EMPLOYEE_SECOND_HIGHEST_SALARY_PER_DEP')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_DF_EMPLOYEE_CSV_SOURCE",
+								"type": "DatasetReference"
+							},
+							"name": "EMPSOURCE"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_DF_SINK_EMPLOYEE",
+								"type": "DatasetReference"
+							},
+							"name": "sink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SECONDHIGHESTSALARY"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          EMP_ID as integer,",
+						"          NAME as string,",
+						"          DEP_ID as integer,",
+						"          SALARY as integer,",
+						"          ACTIVE_STATUS as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> EMPSOURCE",
+						"EMPSOURCE window(over(DEP_ID),",
+						"     desc(SALARY, true),",
+						"     rn = rowNumber()) ~> SECONDHIGHESTSALARY",
+						"SECONDHIGHESTSALARY filter(toInteger(byName('rn')) == 2,",
+						"     partitionBy('hash', 1)) ~> filter1",
+						"filter1 select(mapColumn(",
+						"          EMP_ID,",
+						"          NAME,",
+						"          DEP_ID,",
+						"          SALARY,",
+						"          ACTIVE_STATUS",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['filtered_employee_highest_salary'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_DF_EMPLOYEE_CSV_SOURCE')]",
+				"[concat(variables('factoryId'), '/datasets/DS_DF_SINK_EMPLOYEE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_EMPLOYEE_SECOND_HIGHEST_SALARY_PER_DEP_JOIN')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_DF_EMPLOYEE_CSV_SOURCE",
+								"type": "DatasetReference"
+							},
+							"name": "EMPSOURCE"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_CSV_DEP",
+								"type": "DatasetReference"
+							},
+							"name": "DEPSOURCE"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_DF_SINK_EMPLOYEE",
+								"type": "DatasetReference"
+							},
+							"name": "sink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SECONDHIGHESTSALARY"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "joinDEP"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          EMP_ID as integer,",
+						"          NAME as string,",
+						"          DEP_ID as integer,",
+						"          SALARY as integer,",
+						"          ACTIVE_STATUS as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> EMPSOURCE",
+						"source(output(",
+						"          DEP_ID as integer,",
+						"          DEP_NAME as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     partitionBy('hash', 1)) ~> DEPSOURCE",
+						"EMPSOURCE window(over(DEP_ID),",
+						"     desc(SALARY, true),",
+						"     rn = rowNumber()) ~> SECONDHIGHESTSALARY",
+						"SECONDHIGHESTSALARY filter(toInteger(byName('rn')) == 2,",
+						"     partitionBy('hash', 1)) ~> filter1",
+						"joinDEP select(mapColumn(",
+						"          EMP_ID,",
+						"          NAME,",
+						"          DEP_ID = EMPSOURCE@DEP_ID,",
+						"          DEP_NAME,",
+						"          SALARY,",
+						"          ACTIVE_STATUS",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"filter1, DEPSOURCE join(EMPSOURCE@DEP_ID == DEPSOURCE@DEP_ID,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> joinDEP",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['filtered_employee_highest_salary_join_dep'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_DF_EMPLOYEE_CSV_SOURCE')]",
+				"[concat(variables('factoryId'), '/datasets/DS_CSV_DEP')]",
 				"[concat(variables('factoryId'), '/datasets/DS_DF_SINK_EMPLOYEE')]"
 			]
 		}
