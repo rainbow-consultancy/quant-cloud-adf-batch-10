@@ -1,0 +1,96 @@
+{
+	"name": "DF_EMPLOYEE_SECOND_HIGHEST_SALARY_PER_DEP_JOIN",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_DF_EMPLOYEE_CSV_SOURCE",
+						"type": "DatasetReference"
+					},
+					"name": "EMPSOURCE"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_CSV_DEP",
+						"type": "DatasetReference"
+					},
+					"name": "DEPSOURCE"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_DF_SINK_EMPLOYEE",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SECONDHIGHESTSALARY"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "joinDEP"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EMP_ID as integer,",
+				"          NAME as string,",
+				"          DEP_ID as integer,",
+				"          SALARY as integer,",
+				"          ACTIVE_STATUS as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EMPSOURCE",
+				"source(output(",
+				"          DEP_ID as integer,",
+				"          DEP_NAME as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     partitionBy('hash', 1)) ~> DEPSOURCE",
+				"EMPSOURCE window(over(DEP_ID),",
+				"     desc(SALARY, true),",
+				"     rn = rowNumber()) ~> SECONDHIGHESTSALARY",
+				"SECONDHIGHESTSALARY filter(toInteger(byName('rn')) == 2,",
+				"     partitionBy('hash', 1)) ~> filter1",
+				"joinDEP select(mapColumn(",
+				"          EMP_ID,",
+				"          NAME,",
+				"          DEP_ID = EMPSOURCE@DEP_ID,",
+				"          DEP_NAME,",
+				"          SALARY,",
+				"          ACTIVE_STATUS",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"filter1, DEPSOURCE join(EMPSOURCE@DEP_ID == DEPSOURCE@DEP_ID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinDEP",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['filtered_employee_highest_salary_join_dep'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink"
+			]
+		}
+	}
+}
