@@ -47,10 +47,6 @@
 			"type": "string",
 			"defaultValue": "batch_10"
 		},
-		"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
-			"type": "string",
-			"defaultValue": "json"
-		},
 		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name": {
 			"type": "string",
 			"defaultValue": "@triggerBody().folderPath"
@@ -62,6 +58,10 @@
 		"event_based_trigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/a8c62c57-2636-40f5-a753-24c196a04e1f/resourceGroups/rg_qc_batch_10/providers/Microsoft.Storage/storageAccounts/qcadlsbatch10"
+		},
+		"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
+			"type": "string",
+			"defaultValue": "json"
 		},
 		"containerUri": {
 			"type": "string",
@@ -138,9 +138,6 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
-						"value": "[parameters('schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType')]"
-					},
 					"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name": {
 						"value": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name')]"
 					},
@@ -149,6 +146,9 @@
 					},
 					"event_based_trigger_properties_typeProperties_scope": {
 						"value": "[parameters('event_based_trigger_properties_typeProperties_scope')]"
+					},
+					"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
+						"value": "[parameters('schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType')]"
 					}
 				}
 			},

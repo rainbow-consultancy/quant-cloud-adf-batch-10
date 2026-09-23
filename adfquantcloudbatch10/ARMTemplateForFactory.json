@@ -47,10 +47,6 @@
 			"type": "string",
 			"defaultValue": "batch_10"
 		},
-		"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
-			"type": "string",
-			"defaultValue": "json"
-		},
 		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name": {
 			"type": "string",
 			"defaultValue": "@triggerBody().folderPath"
@@ -62,6 +58,10 @@
 		"event_based_trigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/a8c62c57-2636-40f5-a753-24c196a04e1f/resourceGroups/rg_qc_batch_10/providers/Microsoft.Storage/storageAccounts/qcadlsbatch10"
+		},
+		"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
+			"type": "string",
+			"defaultValue": "json"
 		}
 	},
 	"variables": {
@@ -1121,6 +1121,120 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_EVENT_BASED_COPY_ACTIVITY')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyFile",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_BINARY_EVENT_BASED_SOURCE",
+								"type": "DatasetReference",
+								"parameters": {
+									"FOLDER_PATH": {
+										"value": "source",
+										"type": "Expression"
+									},
+									"FILE_NAME": {
+										"value": "@pipeline().parameters.folder_path",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_BINARY_EVENT_BASED_SOURCE",
+								"type": "DatasetReference",
+								"parameters": {
+									"FOLDER_PATH": "target",
+									"FILE_NAME": {
+										"value": "@pipeline().parameters.folder_path",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "folder_path",
+							"value": {
+								"value": "@pipeline().parameters.file_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"file_name": {
+						"type": "string"
+					},
+					"folder_path": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"folder_path": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_BINARY_EVENT_BASED_SOURCE')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PL_FILTER_EMP')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1635,6 +1749,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_BINARY_EVENT_BASED_SOURCE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FOLDER_PATH": {
+						"type": "string"
+					},
+					"FILE_NAME": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FILE_NAME",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().FOLDER_PATH",
+							"type": "Expression"
+						},
+						"fileSystem": "adfbatch10"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_BINARY_MULTIFILE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1881,6 +2033,38 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_EVENT_BASED_TARGET')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_GEN2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TRGT_FILE_NAME": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().TRGT_FILE_NAME",
+							"type": "Expression"
+						},
+						"folderPath": "target",
+						"fileSystem": "adfbatch10"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_ONPREM_SQL')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2042,6 +2226,79 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/IR-SANDEEP-ONPREM-MECHINE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/event_based_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PL_EVENT_BASED_COPY_ACTIVITY",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"file_name": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name')]",
+							"folder_path": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_folder_path')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/adfbatch10/blobs/source/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('event_based_trigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PL_EVENT_BASED_COPY_ACTIVITY')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/schedule_file_name_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PL_COPY_FILES_AS_PER_USER_INPUT",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"FileType": "[parameters('schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2026-09-23T03:57:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								32
+							],
+							"hours": [
+								9
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PL_COPY_FILES_AS_PER_USER_INPUT')]"
 			]
 		},
 		{
@@ -2385,263 +2642,6 @@
 				"[concat(variables('factoryId'), '/datasets/DS_DF_EMPLOYEE_CSV_SOURCE')]",
 				"[concat(variables('factoryId'), '/datasets/DS_CSV_DEP')]",
 				"[concat(variables('factoryId'), '/datasets/DS_DF_SINK_EMPLOYEE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/schedule_file_name_trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "PL_COPY_FILES_AS_PER_USER_INPUT",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"FileType": "[parameters('schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType')]"
-						}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Month",
-						"interval": 1,
-						"startTime": "2026-09-23T03:57:00",
-						"timeZone": "India Standard Time",
-						"schedule": {
-							"minutes": [
-								32
-							],
-							"hours": [
-								9
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PL_COPY_FILES_AS_PER_USER_INPUT')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_EVENT_BASED_COPY_ACTIVITY')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "CopyFile",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Set variable1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_BINARY_EVENT_BASED_SOURCE",
-								"type": "DatasetReference",
-								"parameters": {
-									"FOLDER_PATH": {
-										"value": "@pipeline().parameters.folder_path",
-										"type": "Expression"
-									},
-									"FILE_NAME": {
-										"value": "@pipeline().parameters.file_name",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_EVENT_BASED_TARGET",
-								"type": "DatasetReference",
-								"parameters": {
-									"TRGT_FILE_NAME": {
-										"value": "@pipeline().parameters.file_name",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "folder_path",
-							"value": {
-								"value": "@pipeline().parameters.folder_path",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"file_name": {
-						"type": "string"
-					},
-					"folder_path": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"folder_path": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_BINARY_EVENT_BASED_SOURCE')]",
-				"[concat(variables('factoryId'), '/datasets/DS_EVENT_BASED_TARGET')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_BINARY_EVENT_BASED_SOURCE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ADLS_GEN2",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"FOLDER_PATH": {
-						"type": "string"
-					},
-					"FILE_NAME": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().FILE_NAME",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().FOLDER_PATH",
-							"type": "Expression"
-						},
-						"fileSystem": "adfbatch10"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_EVENT_BASED_TARGET')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ADLS_GEN2",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"TRGT_FILE_NAME": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().TRGT_FILE_NAME",
-							"type": "Expression"
-						},
-						"folderPath": "target",
-						"fileSystem": "adfbatch10"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_GEN2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/event_based_trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "PL_EVENT_BASED_COPY_ACTIVITY",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"file_name": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name')]",
-							"folder_path": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_folder_path')]"
-						}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/adfbatch10/blobs/source/",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('event_based_trigger_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PL_EVENT_BASED_COPY_ACTIVITY')]"
 			]
 		}
 	]
