@@ -5,7 +5,14 @@
 			{
 				"name": "CopyFile",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -36,15 +43,48 @@
 				"inputs": [
 					{
 						"referenceName": "DS_BINARY_EVENT_BASED_SOURCE",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"FOLDER_PATH": {
+								"value": "@pipeline().parameters.folder_path",
+								"type": "Expression"
+							},
+							"FILE_NAME": {
+								"value": "@pipeline().parameters.file_name",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "DS_EVENT_BASED_TARGET",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"TRGT_FILE_NAME": {
+								"value": "@pipeline().parameters.file_name",
+								"type": "Expression"
+							}
+						}
 					}
 				]
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "folder_path",
+					"value": {
+						"value": "@pipeline().parameters.folder_path",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -53,6 +93,11 @@
 			},
 			"folder_path": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"folder_path": {
+				"type": "String"
 			}
 		},
 		"annotations": []
