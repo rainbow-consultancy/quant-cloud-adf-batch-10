@@ -1,0 +1,27 @@
+{
+	"name": "DS_EVENT_BASED_TARGET",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_GEN2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TRGT_FILE_NAME": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().TRGT_FILE_NAME",
+					"type": "Expression"
+				},
+				"folderPath": "target",
+				"fileSystem": "adfbatch10"
+			}
+		}
+	}
+}
