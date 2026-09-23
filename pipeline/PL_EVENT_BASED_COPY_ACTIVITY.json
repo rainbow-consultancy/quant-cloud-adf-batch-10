@@ -35,7 +35,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_EVENT_BASED_TARGET",
+						"referenceName": "DS_BINARY_EVENT_BASED_SOURCE",
 						"type": "DatasetReference"
 					}
 				],
@@ -49,6 +49,9 @@
 		],
 		"parameters": {
 			"file_name": {
+				"type": "string"
+			},
+			"folder_path": {
 				"type": "string"
 			}
 		},

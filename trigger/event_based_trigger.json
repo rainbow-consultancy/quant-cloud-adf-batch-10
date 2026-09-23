@@ -8,6 +8,10 @@
 				"pipelineReference": {
 					"referenceName": "PL_EVENT_BASED_COPY_ACTIVITY",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"file_name": "@triggerBody().folderPath",
+					"folder_path": "@triggerBody().fileName"
 				}
 			}
 		],

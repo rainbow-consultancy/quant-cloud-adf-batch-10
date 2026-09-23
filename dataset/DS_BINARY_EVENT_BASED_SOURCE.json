@@ -1,0 +1,33 @@
+{
+	"name": "DS_BINARY_EVENT_BASED_SOURCE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_GEN2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FOLDER_PATH": {
+				"type": "string"
+			},
+			"FILE_NAME": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().FILE_NAME",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().FOLDER_PATH",
+					"type": "Expression"
+				},
+				"fileSystem": "adfbatch10"
+			}
+		}
+	}
+}
