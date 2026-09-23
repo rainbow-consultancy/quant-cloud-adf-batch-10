@@ -1087,6 +1087,42 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_AZURE_SQL_TABLES')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/schedule_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PL_COPY_FILES_BASED_ON_SIZE",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2026-09-23T09:17:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								19
+							],
+							"hours": [
+								9
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
