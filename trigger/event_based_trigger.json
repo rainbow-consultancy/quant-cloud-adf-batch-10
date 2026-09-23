@@ -1,0 +1,24 @@
+{
+	"name": "event_based_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_EVENT_BASED_COPY_ACTIVITY",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/adfbatch10/blobs/source/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/a8c62c57-2636-40f5-a753-24c196a04e1f/resourceGroups/rg_qc_batch_10/providers/Microsoft.Storage/storageAccounts/qcadlsbatch10",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
