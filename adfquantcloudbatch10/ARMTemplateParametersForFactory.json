@@ -37,6 +37,15 @@
 		},
 		"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
 			"value": "json"
+		},
+		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name": {
+			"value": "@triggerBody().folderPath"
+		},
+		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_folder_path": {
+			"value": "@triggerBody().fileName"
+		},
+		"event_based_trigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/a8c62c57-2636-40f5-a753-24c196a04e1f/resourceGroups/rg_qc_batch_10/providers/Microsoft.Storage/storageAccounts/qcadlsbatch10"
 		}
 	}
 }
