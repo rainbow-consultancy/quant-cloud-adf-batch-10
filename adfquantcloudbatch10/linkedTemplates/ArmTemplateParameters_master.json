@@ -35,6 +35,9 @@
 		"LS_SQL_SERVER_ONPREM_properties_typeProperties_userName": {
 			"value": "batch_10"
 		},
+		"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
+			"value": "json"
+		},
 		"containerUri": {
 			"value": ""
 		},

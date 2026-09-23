@@ -46,6 +46,10 @@
 		"LS_SQL_SERVER_ONPREM_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "batch_10"
+		},
+		"schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType": {
+			"type": "string",
+			"defaultValue": "json"
 		}
 	},
 	"variables": {
@@ -2034,7 +2038,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -2048,15 +2052,18 @@
 				"typeProperties": {
 					"recurrence": {
 						"frequency": "Day",
-						"interval": 1,
+						"interval": 4,
 						"startTime": "2026-09-23T09:17:00",
 						"timeZone": "India Standard Time",
 						"schedule": {
 							"minutes": [
-								21
+								0
 							],
 							"hours": [
-								9
+								9,
+								12,
+								14,
+								16
 							]
 						}
 					}
@@ -2366,6 +2373,46 @@
 				"[concat(variables('factoryId'), '/datasets/DS_DF_EMPLOYEE_CSV_SOURCE')]",
 				"[concat(variables('factoryId'), '/datasets/DS_CSV_DEP')]",
 				"[concat(variables('factoryId'), '/datasets/DS_DF_SINK_EMPLOYEE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/schedule_file_name_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PL_COPY_FILES_AS_PER_USER_INPUT",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"FileType": "[parameters('schedule_file_name_trigger_properties_PL_COPY_FILES_AS_PER_USER_INPUT_parameters_FileType')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2026-09-23T03:57:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								32
+							],
+							"hours": [
+								9
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PL_COPY_FILES_AS_PER_USER_INPUT')]"
 			]
 		}
 	]
