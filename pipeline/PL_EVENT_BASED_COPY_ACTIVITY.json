@@ -46,11 +46,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"FOLDER_PATH": {
-								"value": "@pipeline().parameters.folder_path",
+								"value": "source",
 								"type": "Expression"
 							},
 							"FILE_NAME": {
-								"value": "@pipeline().parameters.file_name",
+								"value": "@pipeline().parameters.folder_path",
 								"type": "Expression"
 							}
 						}
@@ -58,11 +58,12 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DS_EVENT_BASED_TARGET",
+						"referenceName": "DS_BINARY_EVENT_BASED_SOURCE",
 						"type": "DatasetReference",
 						"parameters": {
-							"TRGT_FILE_NAME": {
-								"value": "@pipeline().parameters.file_name",
+							"FOLDER_PATH": "target",
+							"FILE_NAME": {
+								"value": "@pipeline().parameters.folder_path",
 								"type": "Expression"
 							}
 						}
@@ -81,7 +82,7 @@
 				"typeProperties": {
 					"variableName": "folder_path",
 					"value": {
-						"value": "@pipeline().parameters.folder_path",
+						"value": "@pipeline().parameters.file_name",
 						"type": "Expression"
 					}
 				}
