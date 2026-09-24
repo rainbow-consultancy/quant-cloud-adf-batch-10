@@ -1129,14 +1129,7 @@
 					{
 						"name": "CopyFile",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Set variable1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1170,11 +1163,11 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"FOLDER_PATH": {
-										"value": "source",
+										"value": "@last(\n    split(\n        pipeline().parameters.folder_path,\n        '/'\n    )\n)",
 										"type": "Expression"
 									},
 									"FILE_NAME": {
-										"value": "@pipeline().parameters.folder_path",
+										"value": "@pipeline().parameters.file_name",
 										"type": "Expression"
 									}
 								}
@@ -1187,29 +1180,12 @@
 								"parameters": {
 									"FOLDER_PATH": "target",
 									"FILE_NAME": {
-										"value": "@pipeline().parameters.folder_path",
+										"value": "@pipeline().parameters.file_name",
 										"type": "Expression"
 									}
 								}
 							}
 						]
-					},
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "folder_path",
-							"value": {
-								"value": "@pipeline().parameters.file_name",
-								"type": "Expression"
-							}
-						}
 					}
 				],
 				"policy": {
@@ -1221,11 +1197,6 @@
 					},
 					"folder_path": {
 						"type": "string"
-					}
-				},
-				"variables": {
-					"folder_path": {
-						"type": "String"
 					}
 				},
 				"annotations": []
