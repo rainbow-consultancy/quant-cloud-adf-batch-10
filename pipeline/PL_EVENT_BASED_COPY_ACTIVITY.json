@@ -5,20 +5,7 @@
 			{
 				"name": "CopyFile",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "FolderPath",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "FileName",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -75,40 +62,6 @@
 						}
 					}
 				]
-			},
-			{
-				"name": "FolderPath",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "FolderPath",
-					"value": {
-						"value": "@last(\n    split(\n        pipeline().parameters.P_FOLDER_NAME,\n        '/'\n    )\n)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "FileName",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "FileName",
-					"value": {
-						"value": "@pipeline().parameters.P_FILE_NAME",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
