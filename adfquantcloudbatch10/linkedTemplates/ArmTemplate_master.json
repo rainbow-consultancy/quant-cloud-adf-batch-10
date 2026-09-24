@@ -49,11 +49,11 @@
 		},
 		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name": {
 			"type": "string",
-			"defaultValue": "@triggerBody().folderPath"
+			"defaultValue": "@triggerBody().fileName"
 		},
 		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_folder_path": {
 			"type": "string",
-			"defaultValue": "@triggerBody().fileName"
+			"defaultValue": "@triggerBody().folderPath"
 		},
 		"event_based_trigger_properties_typeProperties_scope": {
 			"type": "string",
