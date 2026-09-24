@@ -47,11 +47,11 @@
 			"type": "string",
 			"defaultValue": "batch_10"
 		},
-		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name": {
+		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_P_FILE_NAME": {
 			"type": "string",
 			"defaultValue": "@triggerBody().fileName"
 		},
-		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_folder_path": {
+		"event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_P_FOLDER_NAME": {
 			"type": "string",
 			"defaultValue": "@triggerBody().folderPath"
 		},
@@ -1176,11 +1176,11 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"FOLDER_PATH": {
-										"value": "@last(\n    split(\n        pipeline().parameters.folder_path,\n        '/'\n    )\n)",
+										"value": "@last(\n    split(\n        pipeline().parameters.P_FOLDER_NAME,\n        '/'\n    )\n)",
 										"type": "Expression"
 									},
 									"FILE_NAME": {
-										"value": "@pipeline().parameters.file_name",
+										"value": "@pipeline().parameters.P_FILE_NAME",
 										"type": "Expression"
 									}
 								}
@@ -1193,7 +1193,7 @@
 								"parameters": {
 									"FOLDER_PATH": "target",
 									"FILE_NAME": {
-										"value": "@pipeline().parameters.file_name",
+										"value": "@pipeline().parameters.P_FILE_NAME",
 										"type": "Expression"
 									}
 								}
@@ -1212,7 +1212,7 @@
 						"typeProperties": {
 							"variableName": "FolderPath",
 							"value": {
-								"value": "@last(\n    split(\n        pipeline().parameters.folder_path,\n        '/'\n    )\n)",
+								"value": "@last(\n    split(\n        pipeline().parameters.P_FOLDER_NAME,\n        '/'\n    )\n)",
 								"type": "Expression"
 							}
 						}
@@ -1229,7 +1229,7 @@
 						"typeProperties": {
 							"variableName": "FileName",
 							"value": {
-								"value": "@pipeline().parameters.file_name",
+								"value": "@pipeline().parameters.P_FILE_NAME",
 								"type": "Expression"
 							}
 						}
@@ -1239,10 +1239,10 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"file_name": {
+					"P_FILE_NAME": {
 						"type": "string"
 					},
-					"folder_path": {
+					"P_FOLDER_NAME": {
 						"type": "string"
 					}
 				},
@@ -2268,8 +2268,8 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {
-							"file_name": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_file_name')]",
-							"folder_path": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_folder_path')]"
+							"P_FILE_NAME": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_P_FILE_NAME')]",
+							"P_FOLDER_NAME": "[parameters('event_based_trigger_properties_PL_EVENT_BASED_COPY_ACTIVITY_parameters_P_FOLDER_NAME')]"
 						}
 					}
 				],
